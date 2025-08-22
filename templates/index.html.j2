@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello Node!</title>
+</head>
+<body>
+    <pre><b>Server Values:</b>
+hostname={{ server.hostname }}
+datetime={{ server.datetime }}
+
+<b>Client Values:</b>
+address={{ client.address }}
+real_address={{ client.real_address }}
+method={{ client.method }}
+uri={{ client.uri }}
+headers=
+    {% for name, value in  client.headers -%}
+    {{ name}}: {{ value }}
+    {% endfor -%}
+    </pre>
+</body>
+</html>

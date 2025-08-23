@@ -1,0 +1,31 @@
+name: setup
+on: 
+  workflow_call:
+    inputs:
+      uv-version:
+        type: string
+        default: 'latest'
+      python-version:
+        type: string
+        default: '3.14'
+      production:
+        type: boolean
+        default: false
+        
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    - name: Install UV {{ inputs.uv-version }}
+      run: ci/install_uv.sh ${VERSION}
+      env:
+        VERSION: ${{ inputs.uv-version }}
+    - name: Set up Python ${{ inputs.python-version }}
+      run: uv python install ${VERSION}
+      env:
+        VERSION: ${{ inputs.python-version }}
+    - name: Install requirements
+      run: uv sync

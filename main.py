@@ -10,14 +10,14 @@ with open("/etc/hostname", encoding="utf-8") as f:
 
 app = Flask(__name__)
 
+
 @app.route("/")
 def index() -> str:
     """index route"""
     return render_template(
-        "index.html.j2",
-        server=get_server(),
-        client=get_client(request)
+        "index.html.j2", server=get_server(), client=get_client(request)
     )
+
 
 def get_server() -> dict:
     """returns server information"""
@@ -25,6 +25,7 @@ def get_server() -> dict:
         "hostname": HOSTNAME,
         "datetime": time.asctime(),
     }
+
 
 def get_client(r: Request) -> dict:
     """returns client information"""

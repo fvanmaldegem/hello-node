@@ -1,0 +1,25 @@
+name: setup-uv
+description: Setup UV
+inputs:
+  uv-version:
+    description: "The version of UV to install"
+    default: 'latest'
+  python-version:
+    description: "The version of Python to install"
+    default: '3.13'
+runs:
+  using: composite
+  steps:
+  - name: Install UV {{ inputs.uv-version }}
+    shell: bash
+    run: ci/install_uv.sh
+    env:
+      UV_VERSION: ${{ inputs.uv-version }}
+  - name: Set up Python ${{ inputs.python-version }}
+    shell: bash
+    run: uv python install ${PYTHON_VERSION}
+    env:
+      PYTHON_VERSION: ${{ inputs.python-version }}
+  - name: Install requirements
+    shell: bash
+    run: uv sync

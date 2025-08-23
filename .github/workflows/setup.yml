@@ -8,17 +8,10 @@ on:
       python-version:
         type: string
         default: '3.14'
-      production:
-        type: boolean
-        default: false
-        
-
 jobs:
   setup:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
     - name: Install UV {{ inputs.uv-version }}
       run: ci/install_uv.sh ${VERSION}
       env:

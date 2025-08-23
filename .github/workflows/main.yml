@@ -1,9 +1,11 @@
-name: Pylint
+name: CodeStyle
 
 on: [push]
 
 env:
-  uv-version: latest
+  UV_VERSION: latest
+  IMAGE_NAME: ${{ github.repository }}
+
 
 jobs:
   lint-python:
@@ -13,13 +15,12 @@ jobs:
         python-version: ["3.13"]
     steps:
     - uses: actions/checkout@v4
-    - run: ls -al ./.github/workflows
-    - uses: ./.github/workflows/setup.yml
+    - uses: ./.github/actions/setup-uv
       with:
-        uv-version: ${{ env.uv-version }}
         python-version: ${{ matrix.python-version }}
-    - name: lint
-      run: uvx ruff $(git ls-files '*.py')
+        uv-version: ${{ env.UV_VERSION }}
+    - name: run ruff
+      run: uvx ruff check $(git ls-files '*.py')
   lint-requirements:
     runs-on: ubuntu-latest
     strategy:
@@ -27,11 +28,19 @@ jobs:
         python-version: ["3.13"]
     steps:
     - uses: actions/checkout@v4
-    - uses: ./.github/workflows/setup.yml
+    - uses: ./.github/actions/setup-uv
       with:
-        uv-version: ${{ env.uv-version }}
         python-version: ${{ matrix.python-version }}
+        uv-version: ${{ env.UV_VERSION }}
     - name: lint requirements
       run: |
         uv export --no-dev --format requirements.txt > requirements.txt.tmp
         git diff requirements.txt requirements.txt.tmp
+
+  docker-build:
+    needs: [lint-python, lint-requirements]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the docker image
+        run: docker build . --file Dockerfile  --tag ${{ env.IMAGE_NAME }}:${{ github.sha }}

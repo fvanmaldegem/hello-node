@@ -1,5 +1,4 @@
-name: CodeStyle
-
+name: ci
 on: [push]
 
 env:

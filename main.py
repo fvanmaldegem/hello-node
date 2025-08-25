@@ -1,6 +1,7 @@
 """A simple python application to get node information"""
 
 import time
+import os
 from flask import Flask, Request, request, render_template
 
 HOSTNAME = None
@@ -30,7 +31,7 @@ def get_server() -> dict:
 def get_client(r: Request) -> dict:
     """returns client information"""
     real_ip = r.remote_addr
-    for header_name in ["HTTP_X_FORWARDED_FOR", "HTTP_X_REAL_IP"]:
+    for header_name in ["X-Forwarded-For", "X-Real-IP"]:
         value = r.headers.get(header_name)
         if value is not None:
             real_ip = value
@@ -42,3 +43,10 @@ def get_client(r: Request) -> dict:
         "uri": r.url,
         "headers": r.headers,
     }
+
+if __name__ == "__main__":
+    app.run(
+        host=os.environ.get("FLASK_RUN_HOST", "0.0.0.0"),
+        port=os.environ.get("FLASK_RUN_PORT", "8080"),
+        debug=os.environ.get("FLASK_DEBUG"),
+    )

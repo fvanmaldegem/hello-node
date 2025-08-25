@@ -9,7 +9,7 @@ on:
 env:
   IMAGE_NAME: ${{ github.repository }}:${{ github.sha }}
 jobs:
-  publish:
+  publish-docker:
     runs-on: ubuntu-latest
     permissions:
       packages: write

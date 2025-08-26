@@ -21,7 +21,7 @@ app = Flask(__name__)
 def index() -> str:
     """index route"""
     real_ip = get_real_ip(request)
-    if is_blacklisted(request):
+    if is_blacklisted(real_ip) or is_blacklisted(request.remote_addr):
         return f"Internal server error: {real_ip} is blacklisted", 500
 
     return render_template(
@@ -61,9 +61,9 @@ def get_real_ip(r: Request) -> str:
 
     return real_ip
 
-def is_blacklisted(r: Request) -> bool:
+def is_blacklisted(ip_address: str) -> bool:
     """checks if the request is blacklisted or not"""
-    return get_real_ip(r) in BLACKLISTED_IPS
+    return ip_address in BLACKLISTED_IPS
 
 if __name__ == "__main__":
     app.run(

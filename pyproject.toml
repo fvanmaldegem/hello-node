@@ -1,6 +1,6 @@
 [project]
 name = "hello-node"
-version = "0.0.4"
+version = "1.0.0"
 description = "A simple Hello Node application"
 readme = "README.md"
 requires-python = ">=3.13"

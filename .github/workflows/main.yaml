@@ -9,28 +9,36 @@ env:
 jobs:
   lint-python:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.13"]
     steps:
     - uses: actions/checkout@v4
-    - uses: ./.github/actions/setup-uv
+    - name: "Set up Python"
+      uses: actions/setup-python@v5
       with:
-        python-version: ${{ matrix.python-version }}
-        uv-version: ${{ env.UV_VERSION }}
+        python-version-file: "pyproject.toml"
+    - name: "Install UV"
+      uses: astral-sh/setup-uv@v6
+      with:
+        version: ${{ env.UV_VERSION }}
+        enable-cache: true
+    - name: Install the project
+      run: uv sync --locked --all-extras --dev
     - name: run ruff
       run: uvx ruff check $(git ls-files '*.py')
   lint-requirements:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.13"]
     steps:
     - uses: actions/checkout@v4
-    - uses: ./.github/actions/setup-uv
+    - name: "Set up Python"
+      uses: actions/setup-python@v5
       with:
-        python-version: ${{ matrix.python-version }}
-        uv-version: ${{ env.UV_VERSION }}
+        python-version-file: "pyproject.toml"
+    - name: "Install UV"
+      uses: astral-sh/setup-uv@v6
+      with:
+        version: ${{ env.UV_VERSION }}
+        enable-cache: true
+    - name: Install the project
+      run: uv sync --locked --all-extras --dev
     - name: lint requirements
       run: |
         uv export --no-dev --format requirements.txt > requirements.txt.tmp
